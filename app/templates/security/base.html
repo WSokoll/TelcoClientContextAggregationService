@@ -1,0 +1,26 @@
+{% extends "base.jinja" %}
+
+{% block content %}
+  {% block before_security_card %}
+  {% endblock %}
+
+   <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-4 col-md-7 col-sm-9">
+        <div class="card">
+          <div class="card-body text-center">
+
+            {% block security_card %}
+            {% endblock %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  {% block after_security_card %}
+  {% endblock %}
+
+{% endblock %}

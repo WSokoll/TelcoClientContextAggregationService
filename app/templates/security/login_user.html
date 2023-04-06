@@ -1,0 +1,29 @@
+{% extends "security/base.html" %}
+{% from "_macros.html" import render_field_with_errors, render_field, render_field_errors, render_form_errors, prop_next %}
+
+{% block title %}
+  Log in
+{% endblock %}
+
+{% block security_card %}
+  <h5 class="card-title mb-4">LOG IN</h5>
+
+  <form action="{{ url_for_security('login') }}{{ prop_next() }}" method="POST" name="login_user_form">
+    {{ login_user_form.hidden_tag() }}
+    {{ render_form_errors(login_user_form) }}
+
+    <div class="row mx-2">
+      {{ render_field_with_errors(login_user_form.email, class='form-control w-100', placeholder='Email', autofocus=true) }}
+    </div>
+    <div class="row mx-2">
+      {{ render_field_with_errors(login_user_form.password, class='form-control w-100', placeholder='Password') }}
+    </div>
+
+    {{ render_field_errors(login_user_form.csrf_token) }}
+
+    <div class="row mx-2">
+      {{ render_field(login_user_form.submit, class='btn btn-primary w-100 mb-3') }}
+    </div>
+  </form>
+
+{% endblock %}
