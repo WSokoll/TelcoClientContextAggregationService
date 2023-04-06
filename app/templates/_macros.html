@@ -1,0 +1,61 @@
+{% macro render_field_with_errors(field, class='', placeholder='', autofocus=false) %}
+  <div class="fs-div mb-2 {{ 'mx-3' if field.type == 'RadioField' else '' }}" id="{{ field.id~'-div'|default('fs-field') }}">
+    {% if field.type == 'SelectField' %}
+      <select id="{{ field.id }}" class="{{ class }}" aria-describedby="input-{{ field.name }}-error" autofocus="{{ autofocus }}" name="{{ field.name }}" required="{{ field.requied }}">
+        {% for option in field %}
+          {% if loop.first %}
+            <option value="" disabled selected>Please select one of the options</option>
+          {% endif %}
+          {{ option }}
+        {% endfor %}
+      </select>
+    {% elif field.type == 'RadioField' %}
+      {% for option in field %}
+        <div class="mx-2">
+          {{ option }}
+          <label for="{{ option.id }}">{{ option.label }}</label>
+        </div>
+      {% endfor %}
+    {% else %}
+      {{ field(**{'class': class, 'autofocus': autofocus, 'placeholder': placeholder, 'aria-describedby': 'input-' ~ field.name ~ '-error'})|safe }}
+    {% endif %}
+    {% if field.errors %}
+      {% if field.type == 'RecaptchaField' %}
+        <div id="input-{{ field.name }}-error" class="form-text text-danger">Recaptcha must be filled in correctly</div>
+      {% else %}
+        {% for error in field.errors %}
+          <div id="input-{{ field.name }}-error" class="form-text text-danger">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{% macro render_field(field) %}
+  <div class="fs-div" id="{{ field.id|default('fs-field') }}">{{ field(**kwargs)|safe }}</div>
+{% endmacro %}
+
+{% macro render_field_errors(field) %}
+  <div class="fs-div" id="{{ field.id if field else 'fs-field' }}">
+    {% if field and field.errors %}
+      {% for error in field.errors %}
+        <div class="form-text text-danger mb-2">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{# render WTForms (>3.0) form level errors #}
+{% macro render_form_errors(form) %}
+  {% if form.form_errors %}
+    <div class="fs-div mx-3" id="fs-form-errors">
+    {% for error in form.form_errors %}
+      <div class="fs-error-msg row alert alert-primary mx-1" role="alert">{{ error }}</div>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro prop_next() -%}
+  {% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}
+{%- endmacro %}

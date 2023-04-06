@@ -1,0 +1,16 @@
+{%- with messages = get_flashed_messages(with_categories=true) -%}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ 'primary' if category == 'message' else ('danger' if category == 'error' else category) }} mb-0" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close float-end" aria-label="Close" onclick=delete_flash(this)></button>
+      </div>
+    {% endfor %}
+
+    <script>
+        function delete_flash(flash){
+            $(flash).parent().remove();
+        }
+    </script>
+{% endif %}
+{%- endwith %}
