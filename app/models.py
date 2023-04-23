@@ -22,3 +22,8 @@ class User(db.Model, fsqla_v2.FsUserMixin):
         for attr in self.__mapper__.columns.keys():
             if attr in values:
                 yield attr, values[attr]
+
+
+class Problems(db.Model):
+    __tablename__ = 'problems'
+    __table_args__ = {'extend_existing': True}

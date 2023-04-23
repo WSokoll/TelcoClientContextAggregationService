@@ -27,6 +27,9 @@ def create_app():
 
     db.init_app(app)
 
+    with app.app_context():
+        db.reflect()
+
     from sqlalchemy import Column, Integer, ForeignKey
     fsqla_v2.FsModels.db = db
     fsqla_v2.FsModels.user_table_name = "user"
@@ -67,5 +70,8 @@ def create_app():
 
     from app.views.home import bp as bp_home
     app.register_blueprint(bp_home)
+
+    from app.views.report import bp as bp_report
+    app.register_blueprint(bp_report)
 
     return app
