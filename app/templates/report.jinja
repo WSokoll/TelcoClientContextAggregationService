@@ -1,5 +1,9 @@
 {% extends 'base.jinja' %}
 {% from "_macros.html" import render_field_with_errors, render_form_errors %}
+{% block head %}
+	<link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbox.css') }}">
+{% endblock %}
 
 {% block content %}
 
@@ -33,4 +37,46 @@
     </div>
   </div>
 
+
+  <div class="chatbox-wrapper">
+      <div class="chatbox-toggle">
+          <i class='bx bxs-message-alt-add'></i>
+      </div>
+      <div class="chatbox-message-wrapper">
+          <div class="chatbox-message-header">
+              <div class="chatbox-message-profile">
+                  <img src="{{url_for('static', filename='images/openai-chatgpt-logo.png')}}" alt="" class="chatbox-message-image">
+                  <div>
+                      <h4 class="chatbox-message-name">Chatbot Assistant</h4>
+                      <p class="chatbox-message-status">I am here to help!</p>
+                  </div>
+              </div>
+          </div>
+          <div class="chatbox-message-content">
+              <h4 class="chatbox-message-no-message">You don't have message yet!</h4>
+              <!-- <div class="chatbox-message-item sent">
+                  <span class="chatbox-message-item-text">
+                      Lorem, ipsum, dolor sit amet consectetur adipisicing elit. Quod, fugiat?
+                  </span>
+                  <span class="chatbox-message-item-time">08:30</span>
+              </div>
+              <div class="chatbox-message-item received">
+                  <span class="chatbox-message-item-text">
+                      Lorem, ipsum, dolor sit amet consectetur adipisicing elit. Quod, fugiat?
+                  </span>
+                  <span class="chatbox-message-item-time">08:30</span>
+              </div> -->
+          </div>
+          <div class="chatbox-message-bottom">
+              <form action="#" class="chatbox-message-form">
+                  <textarea rows="1" placeholder="Type message..." class="chatbox-message-input"></textarea>
+                  <button type="submit" class="chatbox-message-submit"><i class='bx bx-send' ></i></button>
+              </form>
+          </div>
+      </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static', filename='js/chatbox.js')}}"></script>
 {% endblock %}
