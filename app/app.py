@@ -66,6 +66,7 @@ def create_app():
 
     @app.before_first_request
     def db_init():
+        # init app database
         if not user_datastore.find_role(role='Admin'):
             app_db.session.add(Role(name='Admin'))
         if not user_datastore.find_role(role='Customer'):
@@ -85,6 +86,32 @@ def create_app():
                 roles=['Customer']
             )
         app_db.session.commit()
+
+        # init context database
+        customer = user_datastore.find_user(email=app.config['CUSTOMER_EMAIL'])
+
+        if not context_db.db.contexts.count_documents({'userId': customer.id}):
+            context_db.db.contexts.insert_one({
+                'userId': customer.id,
+                'personalData': {
+                    'name': 'Adam Kowalski',
+                    'age': 30,
+                    'gender': 'male',
+                    'location': 'Cracow Poland'
+                },
+                'technicalData': {
+                    'modemRouterModel': 'NETGEAR Nighthawk M5 MR5200',
+                    'mobilePhoneModel': 'Nokia 3310'
+                },
+                'crmData': {
+                    'subscriptionType': 'monthly subscription'
+                },
+                'billingData': {
+                    'paymentsHistory': [],
+                    'serviceUsage': ''
+                },
+                'tickets': {}
+            })
 
     from app.views.home import bp as bp_home
     app.register_blueprint(bp_home)
