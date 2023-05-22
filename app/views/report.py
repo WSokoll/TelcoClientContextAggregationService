@@ -32,7 +32,7 @@ def get_post():
         # save ticket to the context database
         context_db.db.contexts.update_one(
             {'userId': current_user.id},
-            {'$set': {'tickets.' + datetime.now().strftime('%H:%M:%S-%d/%m/%y'): ticket}}
+            {'$set': {'tickets.' + str(current_user.id) + datetime.now().strftime('%H%M%S%d%m%y'): ticket}}
         )
 
         flash('Problem has been reported')
