@@ -3,12 +3,24 @@
 
 SECRET_KEY = 'please_change_@187%0^&'
 
-# Database connection
-DB_HOST = 'localhost'
-DB_PORT = 3306
-DB_NAME = 'test'
-DB_USER = 'test'
-DB_PASSWORD = 'test'
+# MySQL connection
+MYSQL_HOST = 'localhost'
+MYSQL_PORT = 3306
+MYSQL_DB_NAME = 'test'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = 'root'
+
+# MongoDB connection
+MONGODB_HOST = 'localhost'
+MONGODB_PORT = 27017
+MONGODB_DB_NAME = 'test'
+
+MONGODB_AUTH_ENABLED = False
+
+# used only if MONGODB_AUTH_ENABLED = True
+MONGODB_USER = 'root'
+MONGODB_PASSWORD = 'root'
+
 
 # Admin credentials - db init
 ADMIN_EMAIL = 'admin@admin.com'
