@@ -16,20 +16,6 @@ USE `telco`;
 -- --------------------------------------------------------
 
 --
--- Structure for the `problems` table
---
-
-CREATE TABLE `problems` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` varchar(500) NOT NULL,
-  `category` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Structure for the `role` table
 --
 
@@ -85,14 +71,6 @@ CREATE TABLE `user` (
 
 
 --
--- Indexes for the table `problems`
---
-ALTER TABLE `problems`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`),
-  ADD KEY `user_id_fk` (`user_id`);
-
---
 -- Indexes for the table `role`
 --
 ALTER TABLE `role`
@@ -117,12 +95,6 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- AUTO_INCREMENT for the table `problems`
---
-ALTER TABLE `problems`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for the table `role`
 --
 ALTER TABLE `role`
@@ -134,12 +106,6 @@ ALTER TABLE `role`
 ALTER TABLE `user`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
---
--- Constraints for the `problems` table
---
-ALTER TABLE `problems`
-  ADD CONSTRAINT `user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

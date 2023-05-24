@@ -1,8 +1,8 @@
-from app.app import db
+from app.app import app_db
 from flask_security.models import fsqla_v2
 
 
-class Role(db.Model, fsqla_v2.FsRoleMixin):
+class Role(app_db.Model, fsqla_v2.FsRoleMixin):
     __tablename__ = 'role'
     __table_args__ = {'extend_existing': True}
 
@@ -10,7 +10,7 @@ class Role(db.Model, fsqla_v2.FsRoleMixin):
         return self.name
 
 
-class User(db.Model, fsqla_v2.FsUserMixin):
+class User(app_db.Model, fsqla_v2.FsUserMixin):
     __tablename__ = 'user'
     __table_args__ = {'extend_existing': True}
 
@@ -22,8 +22,3 @@ class User(db.Model, fsqla_v2.FsUserMixin):
         for attr in self.__mapper__.columns.keys():
             if attr in values:
                 yield attr, values[attr]
-
-
-class Problems(db.Model):
-    __tablename__ = 'problems'
-    __table_args__ = {'extend_existing': True}
