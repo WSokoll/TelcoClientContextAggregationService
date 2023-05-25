@@ -59,7 +59,7 @@
 
           {% if current_user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('tickets.get_tickets') }}">Your tickets</a>
+              <a class="nav-link" href="{{ url_for('tickets.get') }}">Your tickets</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('report.get_post') }}">Report a problem</a>

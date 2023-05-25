@@ -3,17 +3,15 @@ from flask_pymongo import PyMongo
 from flask_login import current_user
 from flask_security import auth_required
 from flask import current_app
+from app import context_db
 
 bp = Blueprint('tickets', __name__)
 
 
 @bp.route('/tickets', methods=['GET'])
 @auth_required()
-def get_tickets():
-    context_db = PyMongo()
-    context_db.init_app(current_app)
+def get():
 
-    customer = current_user
-    tickets = context_db.db.contexts.find_one({'userId': customer.id}).get('tickets', {})
+    tickets = context_db.db.contexts.find_one({'userId': current_user.id}).get('tickets', {})
 
     return render_template('tickets.jinja', tickets=tickets)
