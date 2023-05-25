@@ -1,8 +1,6 @@
-from flask import Blueprint, render_template, flash, redirect, url_for,jsonify
-from flask_pymongo import PyMongo
+from flask import Blueprint, render_template
 from flask_login import current_user
 from flask_security import auth_required
-from flask import current_app
 from app.app import context_db
 
 bp = Blueprint('tickets', __name__)
