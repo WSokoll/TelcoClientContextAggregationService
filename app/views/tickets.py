@@ -3,7 +3,7 @@ from flask_pymongo import PyMongo
 from flask_login import current_user
 from flask_security import auth_required
 from flask import current_app
-from app import context_db
+from app.app import context_db
 
 bp = Blueprint('tickets', __name__)
 
