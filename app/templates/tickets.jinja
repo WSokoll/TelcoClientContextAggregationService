@@ -1,0 +1,27 @@
+{% extends 'base.jinja' %}
+{% block content %}
+
+ <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-4 col-md-6 col-sm-8">
+        <div class="card">
+          <div class="card-body">
+             <h1 class="row justify-content-center">Your tickets</h1>
+            <ul>
+            {% for ticket_id, ticket_data in tickets.items() %}
+                <li>Ticket ID: {{ ticket_id }}</li>
+                <ul>
+                    <li>Issue type: {{ ticket_data.issueType }}</li>
+                    <li>Issue description: {{ ticket_data.issueDescription }}</li>
+                    <li>Status: {{ ticket_data.status }}</li>
+                </ul>
+            {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
