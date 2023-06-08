@@ -37,6 +37,7 @@ def create_app():
 
     context_db.init_app(app)
 
+
     # MySQL and Security setup
     app.config["SECURITY_DATETIME_FACTORY"] = datetime.now
     app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -94,14 +95,19 @@ def create_app():
             context_db.db.contexts.insert_one({
                 'userId': customer.id,
                 'personalData': {
-                    'name': 'Adam Kowalski',
+                    'email': app.config['CUSTOMER_EMAIL'],
+                    'name': 'Adam',
+                    'surname': 'Kowalski',
                     'age': 30,
                     'gender': 'male',
-                    'location': 'Cracow Poland'
+                    'city': 'Cracow',
+                    'state': 'Poland'
                 },
                 'technicalData': {
-                    'modemRouterModel': 'NETGEAR Nighthawk M5 MR5200',
-                    'mobilePhoneModel': 'Nokia 3310'
+                    'modemRouterBrand': 'Netgear',
+                    'modemRouterModel': 'Nighthawk M5 MR5200',
+                    'mobilePhoneBrand': 'Nokia',
+                    'mobilePhoneModel': '3310'
                 },
                 'crmData': {
                     'subscriptionType': 'monthly subscription'
@@ -121,5 +127,8 @@ def create_app():
 
     from app.views.tickets import bp as bp_tickets
     app.register_blueprint(bp_tickets)
+
+    from app.api.api import bp as bp_api
+    app.register_blueprint(bp_api)
 
     return app
