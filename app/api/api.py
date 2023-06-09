@@ -1,8 +1,10 @@
-from flask import jsonify, request
+from flask import jsonify, request, json
 from app.app import context_db
+from app.email.email_service import MailService
 from flask import Blueprint
 
 bp = Blueprint('api', __name__)
+m = MailService()
 
 
 @bp.route('/api/users/<user_id>', methods=['GET'])
@@ -38,10 +40,22 @@ def get_user_by_parameters():
     return jsonify(output), 200
 
 
-#TODO
-#1. Endpoint for setting up and revoking information about global failure
-#2. Endpoint for changing the ticket status as well as setting up resolution information/guidence for a specific ticket (api/ticket/<ticket_id>
-#3. Endpoint for setting up and patching information about billingData
-#4. Endpoint for patching technicalData
-#5. Endpoint for setting up and patching information about crmData
-#6. Endpoint for user registration with only user_id, personalData and empty tickets
+@bp.route('/api/tickets/<ticket_id>', methods=['PATCH'])
+def patch_change_ticket_status(ticket_id):
+    content = request.data.decode("utf-8")
+    data = json.loads(content)
+    try:
+        actual_ticket_status = data["status"]
+        m.send_ticket_status_changed("syrnikkonrad@gmail.com", "Konrad", ticket_id, actual_ticket_status)
+    except KeyError:
+        return jsonify("Not supported body format"), 400
+    return jsonify(actual_ticket_status), 200
+
+
+# TODO
+# 1. Endpoint for setting up and revoking information about global failure
+# 2. Endpoint for changing the ticket status as well as setting up resolution information/guidence for a specific ticket (api/ticket/<ticket_id>
+# 3. Endpoint for setting up and patching information about billingData
+# 4. Endpoint for patching technicalData
+# 5. Endpoint for setting up and patching information about crmData
+# 6. Endpoint for user registration with only user_id, personalData and empty tickets
