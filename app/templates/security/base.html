@@ -1,5 +1,8 @@
 {% extends "base.jinja" %}
-
+{% block head %}
+	<link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbox.css') }}">
+{% endblock %}
 {% block content %}
   {% block before_security_card %}
   {% endblock %}
@@ -7,7 +10,9 @@
    <div class="container my-5">
     <div class="row justify-content-center">
       <div class="col-lg-4 col-md-7 col-sm-9">
-        <div class="card">
+      {% block security_card_title %}
+      {% endblock %}
+        <div class="card bg-light">
           <div class="card-body text-center">
 
             {% block security_card %}
