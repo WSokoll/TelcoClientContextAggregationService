@@ -40,17 +40,29 @@ def get_user_by_parameters():
     return jsonify(output), 200
 
 
+# this PATCH request body must be like example below:
+# {
+#     "user_id": 2,
+#     "status": "IN-PROGRESS"
+# }
 @bp.route('/api/tickets/<ticket_id>', methods=['PATCH'])
 def patch_change_ticket_status(ticket_id):
     content = request.data.decode("utf-8")
     data = json.loads(content)
     try:
-        actual_ticket_status = data["status"]
-        m.send_ticket_status_changed("syrnikkonrad@gmail.com", "Konrad", ticket_id, actual_ticket_status)
-    except KeyError:
-        return jsonify("Not supported body format"), 400
-    return jsonify(actual_ticket_status), 200
+        actual_ticket_status = data['status']
+        user_id = data['user_id']
+        user = context_db.db.contexts.find_one({'userId': int(user_id)})
+        del user['_id']
+        user_name = user['personalData']['name']
+        user_email = user['personalData']['email']
+        # m.send_ticket_status_changed(user_email, user_name, ticket_id, actual_ticket_status)
 
+        # for testing only
+        # m.send_ticket_status_changed('syrnikkonrad@gmail.com', 'Konrad', ticket_id, actual_ticket_status)
+    except KeyError:
+        return jsonify('Not supported body format'), 400
+    return jsonify(actual_ticket_status), 200
 
 # TODO
 # 1. Endpoint for setting up and revoking information about global failure
