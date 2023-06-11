@@ -12,6 +12,9 @@
 
 {% set counts = {'reported': 0, 'in-progress': 0, 'resolved': 0} %}
 {% set all_count = tickets|length %}
+{% if all_count == 0 %}
+{% set all_count = 1 %}
+{% endif %}
 
 {% for ticket_data in tickets.values() %}
     {% if ticket_data.status in counts %}
