@@ -2,11 +2,172 @@
 {% block head %}
 	<link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbox.css') }}">
+	<style>
+	        .modal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 1; /* Sit on top */
+          padding-top: 100px; /* Location of the box */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgb(0,0,0); /* Fallback color */
+          background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+          position: relative;
+          background-color: #fefefe;
+          margin: auto;
+          width: 80%;
+          box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+          -webkit-animation-name: animatetop;
+          -webkit-animation-duration: 0.4s;
+          animation-name: animatetop;
+          animation-duration: 0.4s
+        }
+
+        /* Add Animation */
+        @-webkit-keyframes animatetop {
+          from {top:-300px; opacity:0}
+          to {top:0; opacity:1}
+        }
+
+        @keyframes animatetop {
+          from {top:-300px; opacity:0}
+          to {top:0; opacity:1}
+        }
+
+        /* The Close Button */
+        .close {
+          color: black;
+          border: None;
+          background: white;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+          cursor: pointer;
+        }
+
+        .modal-header {
+          padding: 20px 20px;
+        }
+
+        .modal-body {padding: 20px 20px;}
+
+        .modal-footer {
+            padding: 15px 15px;
+        }
+    </style>
 {% endblock %}
+
+
 {% block content %}
+
+<style>
+  .card-body {
+    height: 250px; /* Ustaw stałą wysokość dla elementu card-body */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .card {
+    margin-bottom: 20px; /* Ustaw margines dolny dla elementu card */
+  }
+</style>
 <div class="alert alert-dismissible alert-success">
   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   <strong>All services are working correctly!</strong> No impactful issues were reported</a>.
 </div>
+<br>
 
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+
+    {% for service in services %}
+      <div class="col-sm-4">
+        <div class="card bg-light mb-3">
+          <div class="card-header">
+            <h3>{{ service['serviceName'] }}</h3>
+          </div>
+          <div class="card-body">
+            <br>
+            <h5>Status:</h5>
+            {% if service['status'] == 'healthy' %}
+                <span class="badge rounded-pill bg-success" style="font-size: 20px">{{ service['status'] }}</span>
+            {% elif service['status'] == 'unhealthy' %}
+                <span class="badge rounded-pill bg-warning" style="font-size: 20px">{{ service['status'] }}</span>
+            {% elif service['status'] == 'down' %}
+                <span class="badge rounded-pill bg-danger" style="font-size: 20px">{{ service['status'] }}</span>
+            {% endif %}
+                <br>
+                <button type="button" class="btn btn-sm btn-outline-dark" onclick="openForm({{ loop.index }})">More info</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Modal -->
+       <div id="myModal{{ loop.index }}" class="modal" name="myModal">
+          <!-- Modal content -->
+          <div class="modal-content" style="padding: 15px;">
+            <div class="modal-header">
+                <h2>{{ service['serviceName'] }} INFORMATION</h2>
+                <button class="close" onclick="closeForm({{ loop.index }})">&times;</button>
+            </div>
+            <div class="modal-body">
+            {% if service['status'] == 'unhealthy' %}
+                <h4 class="text-warning">We regret to inform you that the service is currently not working properly, we apologize for any inconvenience. We are doing everything in our power to restore this service to its proper functioning.</h4>
+                <br><br>
+                <h4>Impacted locations of {{ service['serviceName'] }} {{ service['status'] }} status:</h4>
+                <br>
+                {% set locations = service['impactedLocations'] | join('<br>') %}
+                    <h5>{{ locations }}</h5>
+            {% endif %}
+            {% if service['status'] == 'down' %}
+                <h4 class="text-danger">We regret to inform you that the service is currently not working properly, we apologize for any inconvenience. We are doing everything in our power to restore this service to its proper functioning.</h4>
+                <br><br>
+                <h4>Impacted locations of {{ service['serviceName'] }} {{ service['status'] }} status:</h4>
+                <br>
+                {% set locations = service['impactedLocations'] | join('<br>') %}
+                    <h5>{{ locations }}</h5>
+            {% endif %}
+            {% if service['status'] == 'healthy' %}
+                <h4 class="text-success">We are pleased to inform you that the {{ service['serviceName'] }} is working properly</h4>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+
+    {% endfor %}
+    </div>
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementByName("myModal");
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+function openForm(value) {
+    var modal = document.getElementById("myModal" + value);
+    modal.style.display = "block";
+}
+
+function closeForm(value) {
+    var modal = document.getElementById("myModal" + value);
+    modal.style.display = "none";
+}
+</script>
 {% endblock %}

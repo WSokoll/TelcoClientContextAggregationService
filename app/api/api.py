@@ -64,6 +64,60 @@ def patch_change_ticket_status(ticket_id):
         return jsonify('Not supported body format'), 400
     return jsonify(actual_ticket_status), 200
 
+
+@bp.route('/api/services/<serviceName>', methods=['GET'])
+def get_service_by_serviceName(serviceName):
+    try:
+        service = context_db.db.services.find_one({'serviceName': serviceName})
+        del service['_id']
+        return jsonify(service), 200
+    except ValueError:
+        return jsonify('Parameter serviceName is incorrect'), 400
+
+
+@bp.route('/api/services', methods=['GET'])
+def get_service_by_parameters():
+    args = request.args
+    params = dict()
+    if not bool(args):
+        return jsonify('Query parameter must be passed'), 400
+    for key, value in args.items():
+        if key not in ['serviceName', 'status', 'impactedLocations']:
+            return jsonify('Unsupported query parameter: ' + key), 400
+        params[key] = value
+    output = []
+    services = context_db.db.services.find(params)
+    for service in services:
+        service_data = dict()
+        service_data['serviceName'] = service['serviceName']
+        service_data['status'] = service['status']
+        service_data['impactedLocations'] = service['impactedLocations']
+        output.append(service_data)
+    return jsonify(output), 200
+
+
+@bp.route('/api/services/<serviceName>', methods=['POST'])
+def update_service_by_serviceName(serviceName):
+    try:
+        service = context_db.db.services.find_one({'serviceName': serviceName})
+        if not service:
+            return jsonify('Service not found'), 404
+
+        data = request.json
+        new_status = data.get('newStatus')
+        impacted_locations = data.get('impactedLocations')
+
+        if new_status:
+            service['status'] = new_status
+        if impacted_locations:
+            service['impactedLocations'] = impacted_locations
+
+        context_db.db.services.update_one({'serviceName': serviceName}, {'$set': service})
+        del service['_id']
+        return jsonify(service), 200
+    except Exception as e:
+        return jsonify(str(e)), 400
+
 # TODO
 # 1. Endpoint for setting up and revoking information about global failure
 # 2. Endpoint for changing the ticket status as well as setting up resolution information/guidence for a specific ticket (api/ticket/<ticket_id>

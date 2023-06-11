@@ -119,6 +119,43 @@ def create_app():
                 'tickets': {}
             })
 
+        if not context_db.db.services.count_documents({'serviceName': 'GSM Network'}):
+            context_db.db.services.insert_one({
+                'serviceName': 'GSM Network',
+                'status': 'healthy',
+                'impactedLocations': []
+            })
+        if not context_db.db.services.count_documents({'serviceName': '3G Network'}):
+            context_db.db.services.insert_one({
+                'serviceName': '3G Network',
+                'status': 'unhealthy',
+                'impactedLocations': ['Cracow', 'Katowice']
+            })
+        if not context_db.db.services.count_documents({'serviceName': 'EDGE Network'}):
+            context_db.db.services.insert_one({
+                'serviceName': 'EDGE Network',
+                'status': 'healthy',
+                'impactedLocations': []
+            })
+        if not context_db.db.services.count_documents({'serviceName': 'LTE Network'}):
+            context_db.db.services.insert_one({
+                'serviceName': 'LTE Network',
+                'status': 'down',
+                'impactedLocations': ['Gdansk', 'Warsaw', 'Zakopane', 'Cracow']
+            })
+        if not context_db.db.services.count_documents({'serviceName': '5G Network'}):
+            context_db.db.services.insert_one({
+                'serviceName': '5G Network',
+                'status': 'healthy',
+                'impactedLocations': []
+            })
+        if not context_db.db.services.count_documents({'serviceName': 'Chat Service'}):
+            context_db.db.services.insert_one({
+                'serviceName': 'Chat Service',
+                'status': 'healthy',
+                'impactedLocations': []
+            })
+
     from app.views.home import bp as bp_home
     app.register_blueprint(bp_home)
 
