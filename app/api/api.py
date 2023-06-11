@@ -107,10 +107,13 @@ def update_service_by_serviceName(serviceName):
         new_status = data.get('newStatus')
         impacted_locations = data.get('impactedLocations')
 
-        if new_status:
-            service['status'] = new_status
         if impacted_locations:
             service['impactedLocations'] = impacted_locations
+        if new_status:
+            service['status'] = new_status
+            if new_status == 'healthy':
+                impacted_locations = []
+                service['impactedLocations'] = impacted_locations
 
         context_db.db.services.update_one({'serviceName': serviceName}, {'$set': service})
         del service['_id']
