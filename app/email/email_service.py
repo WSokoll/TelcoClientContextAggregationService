@@ -1,23 +1,29 @@
 import smtplib
 from jinja2 import Environment, FileSystemLoader
-from app.email.email_config import EMAIL_ADDRESS, EMAIL_PASSWORD, EMAIL_SALT, EMAIL_SECRET
 from email.message import EmailMessage
-from itsdangerous import URLSafeTimedSerializer
 
 
 # This class build as Singleton is responsible for sending email verifications
 class MailService:
-    smtpObj = smtplib.SMTP("smtp.gmail.com", 587)
-    smtpObj.ehlo()
-    smtpObj.starttls()
-    smtpObj.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+    EMAIL_ADDRESS = ''
+    EMAIL_PASSWORD = ''
 
-    # This method sends the verification link for a new user
-    @staticmethod
-    def send_ticket_status_changed(email, firstname, ticket_id, new_status):
+    smtp_obj = smtplib.SMTP("smtp.gmail.com", 587)
+
+    def init_app(self, app):
+
+        self.EMAIL_ADDRESS = app.config['EMAIL_ADDRESS']
+        self.EMAIL_PASSWORD = app.config['EMAIL_PASSWORD']
+
+        self.smtp_obj.ehlo()
+        self.smtp_obj.starttls()
+        self.smtp_obj.login(self.EMAIL_ADDRESS, self.EMAIL_PASSWORD)
+
+    # Sending email with status changed info
+    def send_ticket_status_changed(self, email, firstname, ticket_id, new_status):
         msg = EmailMessage()
         msg['Subject'] = f'New status of {ticket_id} ticket'
-        msg['From'] = EMAIL_ADDRESS
+        msg['From'] = self.EMAIL_ADDRESS
         msg['To'] = email
 
         # Construct the email body with html file content
@@ -31,4 +37,20 @@ class MailService:
         # email_body = f"Hello {firstname},\n\nYour reported problem with id {ticket_id}:\n\n has now new status:\n\n{new_status}"
         # msg.set_content(email_body)
 
-        MailService.smtpObj.send_message(msg)
+        self.smtp_obj.send_message(msg)
+
+    # Sending email with temporal credentials
+    def send_credentials(self, email, password, firstname):
+        msg = EmailMessage()
+        msg['Subject'] = f'Your new credentials'
+        msg['From'] = self.EMAIL_ADDRESS
+        msg['To'] = email
+
+        # Construct the email body with html file content
+        file_loader = FileSystemLoader('app/templates/email')
+        env = Environment(loader=file_loader)
+        template = env.get_template('temporal_credentials.html')
+        output = template.render(firstname=firstname, email=email, password=password)
+        msg.add_alternative(output, subtype='html')
+
+        self.smtp_obj.send_message(msg)
