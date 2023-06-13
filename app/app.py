@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_security import SQLAlchemyUserDatastore, Security, hash_password
 from flask_security.models import fsqla_v2
 
+from app.email.email_service import MailService
+
 # MySQL
 app_db = SQLAlchemy()
 
@@ -13,6 +15,7 @@ app_db = SQLAlchemy()
 context_db = PyMongo()
 
 security = Security()
+mail_service = MailService()
 
 
 def create_app():
@@ -36,7 +39,6 @@ def create_app():
             f"mongodb://{app.config['MONGODB_HOST']}:{app.config['MONGODB_PORT']}/{app.config['MONGODB_DB_NAME']}")
 
     context_db.init_app(app)
-
 
     # MySQL and Security setup
     app.config["SECURITY_DATETIME_FACTORY"] = datetime.now
@@ -64,6 +66,7 @@ def create_app():
     user_datastore = SQLAlchemyUserDatastore(app_db, User, Role)
 
     security.init_app(app, user_datastore)
+    mail_service.init_app(app)
 
     @app.before_first_request
     def db_init():
@@ -165,7 +168,13 @@ def create_app():
     from app.views.tickets import bp as bp_tickets
     app.register_blueprint(bp_tickets)
 
-    from app.api.api import bp as bp_api
-    app.register_blueprint(bp_api)
+    from app.api.users import bp as bp_users_api
+    app.register_blueprint(bp_users_api, url_prefix='/api')
+
+    from app.api.tickets import bp as bp_tickets_api
+    app.register_blueprint(bp_tickets_api, url_prefix='/api')
+
+    from app.api.services import bp as bp_services_api
+    app.register_blueprint(bp_services_api, url_prefix='/api')
 
     return app
