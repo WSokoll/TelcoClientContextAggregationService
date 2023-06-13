@@ -3,7 +3,6 @@ from datetime import datetime
 from flask import Blueprint, render_template, flash, redirect, url_for
 from flask_login import current_user
 from flask_security import auth_required
-from wtforms import TextAreaField
 
 from app.app import context_db
 from app.forms.ticket_report_form import TicketReportForm
