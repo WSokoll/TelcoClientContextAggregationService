@@ -39,6 +39,26 @@ class MailService:
 
         self.smtp_obj.send_message(msg)
 
+    # Sending email with status changed info
+    def send_service_status_changed(self, email, firstname, service_name, new_status):
+        msg = EmailMessage()
+        msg['Subject'] = f'New status of {service_name}'
+        msg['From'] = self.EMAIL_ADDRESS
+        msg['To'] = email
+
+        # Construct the email body with html file content
+        file_loader = FileSystemLoader('app/templates/email')
+        env = Environment(loader=file_loader)
+        template = env.get_template('service_status_changed.html')
+        output = template.render(firstname=firstname, service_name=service_name, new_status=new_status)
+        msg.add_alternative(output, subtype='html')
+
+        # Construct the email body with plain text content
+        # email_body = f"Hello {firstname},\n\n{ service_name }\n\n has changed at your location its status to:\n\n{new_status}"
+        # msg.set_content(email_body)
+
+        self.smtp_obj.send_message(msg)
+
     # Sending email with temporal credentials
     def send_credentials(self, email, password, firstname):
         msg = EmailMessage()

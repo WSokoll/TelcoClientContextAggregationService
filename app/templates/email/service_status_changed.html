@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="x-apple-disable-message-reformatting">
+        <title></title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.1.3/dist/lux/bootstrap.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+        <style>
+        .disabled {
+          pointer-events: none;
+          opacity: 0.6;
+        }
+        </style>
+    </head>
+
+    <body style="margin:0;padding:0;">
+      <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+        <tr>
+          <td align="center" style="padding:0;">
+            <table role="presentation" style="width:602px; border-collapse:collapse; border:2px solid black; border-spacing:0; text-align:left;">
+              <tr>
+                <td align="center" style="padding:40px 0 30px 0;">
+                  <a style="font-size: 30px;">Telco Client Context Aggregation Service</a>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:20px 30px 42px 30px;">
+                  <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                    <tr>
+                      <td style="padding:0 0 36px 0;">
+                        <br/>
+                        <h1 style="font-size:25px; margin:0 0 20px 0; color: #2faff8">Hi {{ firstname }}!</h1>
+                        <br/><br/>
+                        <p style="font-size:25px; line-height:24px;">{{ service_name }}</p>
+                        <p style="font-size:16px; line-height:24px;">Has changed at your location its status to:</p>
+                        {% if new_status == 'healthy' %}
+                          <a id="new_status" style="font-size: 30px; color: limegreen">{{ new_status }}</a>
+                        {% elif new_status == 'unhealthy' %}
+                          <a id="new_status" style="font-size: 30px; color:orange">{{ new_status }}</a>
+                        {% elif new_status == 'down' %}
+                          <a id="new_status" style="font-size: 30px; color:red">{{ new_status }}</a>
+                        {%  endif %}
+                        <br/><br/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:0 0 20px 0;">
+                        {% if new_status == 'unhealthy' or new_status == 'down' %}
+                            <small class="text-muted" style="color: #a4a4a4;">We're doing our best to solve your problem!</small>
+                        {% endif %}
+                        <br>
+                        <small class="text-muted" style="color: #2faff8">This message was generated automatically, please do not respond for this email.</small>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:20px;background:black;">
+                  <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px; ">
+                    <tr>
+                      <td style="padding:10px 10px 10px 10px;width:50%;" align="left">
+                        <small style="margin:0; color: lightgray">
+                          &reg; 1999-2023, TelcoClientContextAggregationService Certification Program
+                        </small>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+</html>
