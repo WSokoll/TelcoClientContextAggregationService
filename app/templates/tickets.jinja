@@ -51,8 +51,10 @@
                 <p class="card-text">{{ ticket_data.issueDescription }}</p>
                 <br>
                 <br>
-                <h5 class="card-title">Resolution</h5>
-                <p class="card-text">tutaj rozwiązanie</p>
+                {% if ticket_data.feedback %}
+                    <h5 class="card-title">Resolution (feedback)</h5>
+                    <p class="card-text">{{ ticket_data.feedback }}</p>
+                {% endif %}
                 <br>
                 <div class="progress">
                     {% if ticket_data.status == 'reported' %}

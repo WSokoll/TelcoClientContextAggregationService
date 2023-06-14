@@ -20,7 +20,7 @@ class MailService:
         self.smtp_obj.login(self.EMAIL_ADDRESS, self.EMAIL_PASSWORD)
 
     # Sending email with status changed info
-    def send_ticket_status_changed(self, email, firstname, ticket_id, new_status):
+    def send_ticket_status_changed(self, email, firstname, ticket_id, new_status, feedback):
         msg = EmailMessage()
         msg['Subject'] = f'New status of {ticket_id} ticket'
         msg['From'] = self.EMAIL_ADDRESS
@@ -30,7 +30,7 @@ class MailService:
         file_loader = FileSystemLoader('app/templates/email')
         env = Environment(loader=file_loader)
         template = env.get_template('ticket_status_changed.html')
-        output = template.render(firstname=firstname, ticket_id=ticket_id, new_status=new_status)
+        output = template.render(firstname=firstname, ticket_id=ticket_id, new_status=new_status, feedback=feedback)
         msg.add_alternative(output, subtype='html')
 
         # Construct the email body with plain text content
