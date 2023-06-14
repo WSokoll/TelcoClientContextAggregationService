@@ -1,8 +1,9 @@
 import random
 import string
+import uuid
 from datetime import datetime
 
-from flask import jsonify, request, abort
+from flask import jsonify, request, abort, json
 from flask_security import SQLAlchemyUserDatastore
 
 from app.app import context_db, app_db, mail_service
@@ -101,3 +102,88 @@ def register_new_user():
     mail_service.send_credentials(data['email'], temporal_password, data['name'])
 
     return jsonify('User registered'), 200
+
+
+# this POST request body must be like example below:
+# {
+#   "technicalData": [
+#     {
+#       "brand": "Apple",
+#       "model": "iPhone 12",
+#       "type": "smartphone"
+#     },
+#     {
+#       "brand": "Samsung",
+#       "model": "Galaxy S21",
+#       "type": "smartphone"
+#     },
+#     {
+#       "brand": "HP",
+#       "model": "Pavilion",
+#       "type": "laptop"
+#     }
+#   ]
+# }
+@bp.route('/users/<int:user_id>/technical_data', methods=['POST'])
+def add_user_technical_data(user_id: int):
+    try:
+        user = context_db.db.contexts.find_one({'userId': int(user_id)})
+        del user['_id']
+
+        if user:
+
+            data = request.json
+            technical_data = data.get('technicalData')
+
+            if technical_data:
+                for product in technical_data:
+                    model = product.get('model')
+                    brand = product.get('brand')
+                    product_type = product.get('type')
+
+                    if model and brand and product_type:
+                        product_id = str(uuid.uuid4())  # Generowanie unikalnego identyfikatora dla produktu
+                        user['technicalData'].setdefault('products', []).append({
+                            '_id': product_id,
+                            'model': model,
+                            'brand': brand,
+                            'type': product_type
+                        })
+
+            context_db.db.contexts.update_one({'userId': int(user_id)}, {'$set': user})
+        else:
+            return jsonify({'message': 'User with this user_id not found'}), 404
+
+    except KeyError:
+        return jsonify('Not supported body format'), 400
+
+    return jsonify(user), 200
+
+
+@bp.route('/users/<int:user_id>/technical_data/<string:product_id>', methods=['DELETE'])
+def delete_user_technical_data(user_id: int, product_id: str):
+    try:
+        user = context_db.db.contexts.find_one({'userId': int(user_id)})
+
+        if user:
+            products = user['technicalData'].get('products', [])
+
+            index = next((index for index, p in enumerate(products) if str(p['_id']) == product_id), None)
+
+            if index is not None:
+                # Delete from list
+                deleted_product = products.pop(index)
+
+                context_db.db.contexts.update_one({'userId': int(user_id)},
+                                                  {'$set': {'technicalData.products': products}})
+
+                return jsonify(
+                    {'message': 'Product deleted successfully', 'deleted_product': deleted_product}), 200
+            else:
+                return jsonify({'message': 'Product with this product_id not found'}), 404
+        else:
+            return jsonify({'message': 'User with this user_id not found'}), 404
+
+    except Exception as e:
+        return jsonify({'message': 'An error occurred'}), 500
+
