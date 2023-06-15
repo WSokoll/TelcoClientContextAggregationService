@@ -2,7 +2,6 @@ venv
 __pycache__
 .idea
 local/config.local.py
-app/email/email_config.py
 
 local/*
 !local/.gitkeep
