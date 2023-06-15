@@ -177,4 +177,10 @@ def create_app():
     from app.api.services import bp as bp_services_api
     app.register_blueprint(bp_services_api, url_prefix='/api')
 
+    from app.api.billing import bp as bp_billing_api
+    app.register_blueprint(bp_billing_api, url_prefix='/api')
+
+    from app.api.crm import bp as bp_crm_api
+    app.register_blueprint(bp_crm_api, url_prefix='/api')
+
     return app

@@ -3,7 +3,7 @@ import string
 import uuid
 from datetime import datetime
 
-from flask import jsonify, request, abort, json
+from flask import jsonify, request
 from flask_security import SQLAlchemyUserDatastore
 
 from app.app import context_db, app_db, mail_service
@@ -11,7 +11,7 @@ from flask import Blueprint
 
 from app.models import User, Role
 
-bp = Blueprint('api', __name__)
+bp = Blueprint('users_api', __name__)
 
 
 @bp.route('/users/<int:user_id>', methods=['GET'])
@@ -142,7 +142,7 @@ def add_user_technical_data(user_id: int):
                     product_type = product.get('type')
 
                     if model and brand and product_type:
-                        product_id = str(uuid.uuid4())  # Generowanie unikalnego identyfikatora dla produktu
+                        product_id = str(uuid.uuid4())  # Generating unique id for product
                         user['technicalData'].setdefault('products', []).append({
                             '_id': product_id,
                             'model': model,
