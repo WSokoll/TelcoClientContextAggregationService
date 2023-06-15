@@ -6,26 +6,27 @@
 {% endblock %}
 
 {% block content %}
-
   <div class="container my-5">
     <div class="row justify-content-center">
-      <div class="col-lg-4 col-md-6 col-sm-8">
-        <div class="card">
+      <div class="col-lg-10 col-md-12 col-sm-14">
+      <h2 class="card-title mb-4 text-center">Report a problem</h2>
+      <br>
+        <div class=" bg-light">
           <div class="card-body">
-              <h5 class="card-title mb-4 text-center">Report a problem</h5>
-
               <form method="POST" action="{{ url_for('report.get_post') }}">
                 {{ form.csrf_token }}
                 {{ render_form_errors(form) }}
 
-                {{ form.description.label(class="mb-1 mt-3") }}:
-                {{ render_field_with_errors(form.description, class="form-control", placeholder='Description', autofocus=true) }}
-
                 {{ form.category.label(class="mb-1 mt-3") }}:
                 {{ render_field_with_errors(form.category, class="form-control") }}
 
+                {{ form.description.label(class="mb-1 mt-3") }}:
+                {{ form.description(class="form-control", placeholder="Enter some description for your problem", autofocus=true, rows=6) }}
+
                 <div class="mb-3 text-center">
-                  <button type="submit" class="btn btn-primary">Report</button>
+                <br>
+                <br>
+                  <button type="submit" class="btn btn-outline-dark w-100">Report</button>
                 </div>
               </form>
           </div>

@@ -4,6 +4,73 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbox.css') }}">
 {% endblock %}
 {% block content %}
+<div class="container">
+<br>
+<h1>Your tickets</h1>
+<br>
+<br>
+
+{% set counts = {'reported': 0, 'in-progress': 0, 'resolved': 0} %}
+{% set all_count = tickets|length %}
+{% if all_count == 0 %}
+{% set all_count = 1 %}
+{% endif %}
+
+{% for ticket_data in tickets.values() %}
+    {% if ticket_data.status in counts %}
+        {% set _ = counts.update({ticket_data.status: counts[ticket_data.status] + 1}) %}
+    {% endif %}
+{% endfor %}
+
+<div class="progress">
+  <div class="progress-bar bg-info" role="progressbar" style="width: {{ counts['reported'] / all_count * 100 }}%;" aria-valuenow="2" aria-valuemin="0" aria-valuemax="2"></div>
+  <div class="progress-bar" role="progressbar" style="width: {{ counts['in-progress'] / all_count * 100 }}%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="2"></div>
+  <div class="progress-bar bg-success" role="progressbar" style="width: {{ counts['resolved'] / all_count * 100 }}%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="2"></div>
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="2"></div>
+  <div class="progress-bar bg-danger" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="2"></div>
+
+</div>
+<br>
+<span class="badge rounded-pill bg-info">reported</span>
+<span class="badge bg-info rounded-pill">{{ counts['reported'] }}</span>
+<span class="badge rounded-pill bg-primary">in-progress</span>
+<span class="badge bg-primary rounded-pill">{{ counts['in-progress'] }}</span>
+<span class="badge rounded-pill bg-success">resolved</span>
+<span class="badge bg-success rounded-pill">{{ counts['resolved'] }}</span>
+<br>
+<br>
+<br>
+ {% for ticket_id, ticket_data in tickets.items() %}
+    <div class="card bg-light mb-3" style="max-width: 100rem;">
+        <div class="card-header">{{ ticket_id }}</div>
+            <div class="card-body">
+                <span class="badge rounded-pill bg-info">{{ ticket_data.status }}</span>
+                <br>
+                <br>
+                <h4 class="card-title">{{ ticket_data.issueType }}</h4>
+                <p class="card-text">{{ ticket_data.issueDescription }}</p>
+                <br>
+                <br>
+                {% if ticket_data.feedback %}
+                    <h5 class="card-title">Resolution (feedback)</h5>
+                    <p class="card-text">{{ ticket_data.feedback }}</p>
+                {% endif %}
+                <br>
+                <div class="progress">
+                    {% if ticket_data.status == 'reported' %}
+                    <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 5%;"></div>
+                    {% elif ticket_data.status == 'in-progress' %}
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                    {% elif ticket_data.status == 'resolved' %}
+                    <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>
+                    {% endif %}
+                </div>
+            </div>
+    </div>
+{% endfor %}
+
+
+
 
  <div class="container my-5">
     <div class="row justify-content-center">
@@ -26,6 +93,6 @@
       </div>
     </div>
   </div>
-
+</div>
 
 {% endblock %}

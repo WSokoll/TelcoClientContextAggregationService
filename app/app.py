@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_security import SQLAlchemyUserDatastore, Security, hash_password
 from flask_security.models import fsqla_v2
 
+from app.email.email_service import MailService
+
 # MySQL
 app_db = SQLAlchemy()
 
@@ -13,6 +15,7 @@ app_db = SQLAlchemy()
 context_db = PyMongo()
 
 security = Security()
+mail_service = MailService()
 
 
 def create_app():
@@ -63,6 +66,7 @@ def create_app():
     user_datastore = SQLAlchemyUserDatastore(app_db, User, Role)
 
     security.init_app(app, user_datastore)
+    mail_service.init_app(app)
 
     @app.before_first_request
     def db_init():
@@ -94,14 +98,19 @@ def create_app():
             context_db.db.contexts.insert_one({
                 'userId': customer.id,
                 'personalData': {
-                    'name': 'Adam Kowalski',
+                    'email': app.config['CUSTOMER_EMAIL'],
+                    'name': 'Adam',
+                    'surname': 'Kowalski',
                     'age': 30,
                     'gender': 'male',
-                    'location': 'Cracow Poland'
+                    'city': 'Cracow',
+                    'state': 'Poland'
                 },
                 'technicalData': {
-                    'modemRouterModel': 'NETGEAR Nighthawk M5 MR5200',
-                    'mobilePhoneModel': 'Nokia 3310'
+                    'modemRouterBrand': 'Netgear',
+                    'modemRouterModel': 'Nighthawk M5 MR5200',
+                    'mobilePhoneBrand': 'Nokia',
+                    'mobilePhoneModel': '3310'
                 },
                 'crmData': {
                     'subscriptionType': 'monthly subscription'
@@ -113,6 +122,43 @@ def create_app():
                 'tickets': {}
             })
 
+        if not context_db.db.services.count_documents({'serviceName': 'GSM Network'}):
+            context_db.db.services.insert_one({
+                'serviceName': 'GSM Network',
+                'status': 'healthy',
+                'impactedLocations': []
+            })
+        if not context_db.db.services.count_documents({'serviceName': '3G Network'}):
+            context_db.db.services.insert_one({
+                'serviceName': '3G Network',
+                'status': 'unhealthy',
+                'impactedLocations': ['Cracow', 'Katowice']
+            })
+        if not context_db.db.services.count_documents({'serviceName': 'EDGE Network'}):
+            context_db.db.services.insert_one({
+                'serviceName': 'EDGE Network',
+                'status': 'healthy',
+                'impactedLocations': []
+            })
+        if not context_db.db.services.count_documents({'serviceName': 'LTE Network'}):
+            context_db.db.services.insert_one({
+                'serviceName': 'LTE Network',
+                'status': 'down',
+                'impactedLocations': ['Gdansk', 'Warsaw', 'Zakopane', 'Cracow']
+            })
+        if not context_db.db.services.count_documents({'serviceName': '5G Network'}):
+            context_db.db.services.insert_one({
+                'serviceName': '5G Network',
+                'status': 'healthy',
+                'impactedLocations': []
+            })
+        if not context_db.db.services.count_documents({'serviceName': 'Chat Service'}):
+            context_db.db.services.insert_one({
+                'serviceName': 'Chat Service',
+                'status': 'healthy',
+                'impactedLocations': []
+            })
+
     from app.views.home import bp as bp_home
     app.register_blueprint(bp_home)
 
@@ -121,5 +167,20 @@ def create_app():
 
     from app.views.tickets import bp as bp_tickets
     app.register_blueprint(bp_tickets)
+
+    from app.api.users import bp as bp_users_api
+    app.register_blueprint(bp_users_api, url_prefix='/api')
+
+    from app.api.tickets import bp as bp_tickets_api
+    app.register_blueprint(bp_tickets_api, url_prefix='/api')
+
+    from app.api.services import bp as bp_services_api
+    app.register_blueprint(bp_services_api, url_prefix='/api')
+
+    from app.api.billing import bp as bp_billing_api
+    app.register_blueprint(bp_billing_api, url_prefix='/api')
+
+    from app.api.crm import bp as bp_crm_api
+    app.register_blueprint(bp_crm_api, url_prefix='/api')
 
     return app

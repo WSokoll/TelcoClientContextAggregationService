@@ -3,6 +3,12 @@
 
 SECRET_KEY = 'please_change_@187%0^&'
 
+# Email config
+EMAIL_ADDRESS = 'test@test.com'
+EMAIL_PASSWORD = 'test'
+EMAIL_SALT = '...'
+EMAIL_SECRET = '...'
+
 # MySQL connection
 MYSQL_HOST = 'localhost'
 MYSQL_PORT = 3306
