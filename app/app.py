@@ -119,4 +119,7 @@ def create_app():
     from app.views.report import bp as bp_report
     app.register_blueprint(bp_report)
 
+    from app.views.admin import bp as bp_admin
+    app.register_blueprint(bp_admin)
+    
     return app

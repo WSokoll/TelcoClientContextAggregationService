@@ -51,9 +51,9 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
         <ul class="navbar-nav">
           {% if current_user.is_authenticated and current_user.has_role('Admin') %}
-{#            <li class="nav-item">#}
-{#              <a class="nav-link" href="{{ url_for('admin.index') }}"><b>*** ADMIN PANEL ***</b></a>#}
-{#            </li>#}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('admin.index') }}"><b>*** ADMIN PANEL ***</b></a>
+          </li>
           {% endif %}
 
           {% if current_user.is_authenticated %}
