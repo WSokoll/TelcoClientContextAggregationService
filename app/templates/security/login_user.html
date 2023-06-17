@@ -5,9 +5,12 @@
   Log in
 {% endblock %}
 
+{% block security_card_title %}
+<h2 class="card-title mb-4 text-center">LOG IN</h2>
+<br>
+{% endblock %}
 {% block security_card %}
-  <h5 class="card-title mb-4">LOG IN</h5>
-
+  <br>
   <form action="{{ url_for_security('login') }}{{ prop_next() }}" method="POST" name="login_user_form">
     {{ login_user_form.hidden_tag() }}
     {{ render_form_errors(login_user_form) }}
@@ -21,8 +24,9 @@
 
     {{ render_field_errors(login_user_form.csrf_token) }}
 
+    <br><br>
     <div class="row mx-2">
-      {{ render_field(login_user_form.submit, class='btn btn-primary w-100 mb-3') }}
+      {{ render_field(login_user_form.submit, class='btn btn-outline-dark w-100 mb-3') }}
     </div>
   </form>
 
