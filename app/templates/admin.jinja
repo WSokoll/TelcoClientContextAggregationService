@@ -1,30 +1,89 @@
 {% extends 'base.jinja' %}
+{% from "_macros.html" import render_field_with_errors, render_form_errors %}
 {% block head %}
 <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbox.css') }}">
 {% endblock %}
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-4 col-md-6 col-sm-8">
-            <div class="card">
+<div class="container-fluid my-5">
+    <div class="row">
+        <div class="col-8">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="table-info">
+                        <th scope="col">ID</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Surname</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">State</th>
+                        <th scope="col">City</th>
+                        <th scope="col">Router Brand</th>
+                        <th scope="col">Router Model</th>
+                        <th scope="col">Phone Brand</th>
+                        <th scope="col">Phone Model</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="table-primary">
+                        <th scope="row">{{ user.userId }}</th>
+                        <td>{{ user.personalData.email }}</td>
+                        <td>{{ user.personalData.name }}</td>
+                        <td>{{ user.personalData.surname }}</td>
+                        <td>{{ user.personalData.age }}</td>
+                        <td>{{ user.personalData.gender }}</td>
+                        <td>{{ user.personalData.state }}</td>
+                        <td>{{ user.personalData.city }}</td>
+                        <td>{{ user.technicalData.modemRouterBrand }}</td>
+                        <td>{{ user.technicalData.modemRouterModel }}</td>
+                        <td>{{ user.technicalData.mobilePhoneBrand }}</td>
+                        <td>{{ user.technicalData.mobilePhoneModel }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-4">
+            <div class="bg-light">
                 <div class="card-body">
-                    <h1 class="row justify-content-center">Search for tickets</h1>
-                    <form method="GET">
-                        <div class="form-row">
-                            <div>
-                                <input type="text" class="form-control" id="user" name="user" placeholder="User">
+                    <h2 class="card-title mb-4 text-center">Filter users</h2>
+                    <form method="POST" action="{{ url_for('admin.get_context') }}">
+                        {{ form.csrf_token }}
+                        {{ render_form_errors(form) }}
+                        <div class="row justify-content-center">
+                            <div class="col">
+                                {{ form.name.label(class="mb-1 mt-1") }}:
+                                {{ render_field_with_errors(form.name, class='form-control w-100', placeholder='User')
+                                }}
+                                {{ form.surname.label(class="mb-1 mt-1") }}:
+                                {{ render_field_with_errors(form.surname, class='form-control w-100',
+                                placeholder='Surname') }}
+
+                                {{ form.email.label(class="mb-1 mt-1") }}:
+                                {{ render_field_with_errors(form.email, class='form-control w-100', placeholder='Email')
+                                }}
+
+                                {{ form.country.label(class="mb-1 mt-1") }}:
+                                {{ render_field_with_errors(form.country, class='form-control w-100',
+                                placeholder='Country') }}
                             </div>
-                            <div>
-                                <select class="form-control" id="status" name="status">
-                                    <option value="">Select status</option>
-                                    <option value="open">Open</option>
-                                    <option value="closed">Closed</option>
-                                </select>
+                            <div class="col">
+                                {{ form.city.label(class="mb-1 mt-1") }}:
+                                {{ render_field_with_errors(form.city, class='form-control w-100', placeholder='City')
+                                }}
+
+                                {{ form.router.label(class="mb-1 mt-1") }}:
+                                {{ render_field_with_errors(form.router, class='form-control w-100',
+                                placeholder='Router') }}
                             </div>
                         </div>
+                        <br>
+                        <br>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary">Filter</button>
+                            <button type="submit" class="btn btn-outline-dark w-100">Filter</button>
                         </div>
                     </form>
                 </div>
@@ -33,7 +92,7 @@
     </div>
 </div>
 
-<!-- Ticket Contexts Table -->
+{# <!-- Ticket Contexts Table -->
 <table class="table row justify-content-center">
     <thead>
         <tr>
@@ -51,6 +110,6 @@
         </tr>
         {% endfor %}
     </tbody>
-</table>
+</table> #}
 </div>
 {% endblock %}

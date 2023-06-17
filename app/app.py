@@ -167,6 +167,9 @@ def create_app():
 
     from app.views.tickets import bp as bp_tickets
     app.register_blueprint(bp_tickets)
+    
+    from app.views.admin import bp as bp_admin
+    app.register_blueprint(bp_admin)
 
     from app.api.users import bp as bp_users_api
     app.register_blueprint(bp_users_api, url_prefix='/api')
@@ -183,7 +186,4 @@ def create_app():
     from app.api.crm import bp as bp_crm_api
     app.register_blueprint(bp_crm_api, url_prefix='/api')
 
-    from app.views.admin import bp as bp_admin
-    app.register_blueprint(bp_admin)
-    
     return app

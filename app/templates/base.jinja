@@ -53,7 +53,7 @@
         <ul class="navbar-nav">
           {% if current_user.is_authenticated and current_user.has_role('Admin') %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('admin.index') }}"><b>*** ADMIN PANEL ***</b></a>
+            <a class="nav-link" href="{{ url_for('admin.get_context') }}"><b>*** ADMIN PANEL ***</b></a>
           </li>
           {% endif %}
 

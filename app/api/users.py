@@ -187,3 +187,11 @@ def delete_user_technical_data(user_id: int, product_id: str):
     except Exception as e:
         return jsonify({'message': 'An error occurred'}), 500
 
+@bp.route('/users', methods=['GET'])
+def get_all_users():
+    try:
+        users = list(context_db.db.contexts.find({}, {'_id': 0}))
+        return users, 200
+
+    except ValueError:
+        return jsonify('An error occured'), 400
