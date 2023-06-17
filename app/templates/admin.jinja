@@ -1,5 +1,5 @@
 {% extends 'base.jinja' %}
-{% from "_macros.html" import render_field_with_errors, render_form_errors %}
+{% from "_macros.html" import render_admin_with_errors, render_form_errors, render_field %}
 {% block head %}
 <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbox.css') }}">
@@ -19,10 +19,11 @@
                         <th scope="col">Gender</th>
                         <th scope="col">State</th>
                         <th scope="col">City</th>
-                        <th scope="col">Router Brand</th>
-                        <th scope="col">Router Model</th>
-                        <th scope="col">Phone Brand</th>
-                        <th scope="col">Phone Model</th>
+                        <th scope="col">Router brand</th>
+                        <th scope="col">Router model</th>
+                        <th scope="col">Phone brand</th>
+                        <th scope="col">Phone model</th>
+                        <th scope="col">Subscription type</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,6 +41,7 @@
                         <td>{{ user.technicalData.modemRouterModel }}</td>
                         <td>{{ user.technicalData.mobilePhoneBrand }}</td>
                         <td>{{ user.technicalData.mobilePhoneModel }}</td>
+                        <td>{{ user.crmData.subscriptionType }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -50,34 +52,39 @@
             <div class="bg-light">
                 <div class="card-body">
                     <h2 class="card-title mb-4 text-center">Filter users</h2>
-                    <form method="POST" action="{{ url_for('admin.get_context') }}">
+                    <form method="POST" action="{{ url_for('admin.filter_users') }}">
                         {{ form.csrf_token }}
                         {{ render_form_errors(form) }}
                         <div class="row justify-content-center">
                             <div class="col">
-                                {{ form.name.label(class="mb-1 mt-1") }}:
-                                {{ render_field_with_errors(form.name, class='form-control w-100', placeholder='User')
-                                }}
-                                {{ form.surname.label(class="mb-1 mt-1") }}:
-                                {{ render_field_with_errors(form.surname, class='form-control w-100',
-                                placeholder='Surname') }}
-
-                                {{ form.email.label(class="mb-1 mt-1") }}:
-                                {{ render_field_with_errors(form.email, class='form-control w-100', placeholder='Email')
-                                }}
-
-                                {{ form.country.label(class="mb-1 mt-1") }}:
-                                {{ render_field_with_errors(form.country, class='form-control w-100',
-                                placeholder='Country') }}
+                                {{ form.user_id.label(class="") }}:
+                                {{ render_admin_with_errors(form.user_id, class='form-control w-100', placeholder='ID')}}
+                                {{ form.email.label(class="") }}:
+                                {{ render_admin_with_errors(form.email, class='form-control w-100', placeholder='Email')}}
+                                {{ form.name.label(class="") }}:
+                                {{ render_admin_with_errors(form.name, class='form-control w-100', placeholder='Name')}}
+                                {{ form.surname.label(class="") }}:
+                                {{ render_admin_with_errors(form.surname, class='form-control w-100',placeholder='Surname') }}
+                                {{ form.age.label(class="") }}:
+                                {{ render_admin_with_errors(form.age, class='form-control w-100', placeholder='Email')}}
+                                {{ form.gender.label(class="") }}:
+                                {{ render_admin_with_errors(form.gender, class='form-control w-100')}}
                             </div>
                             <div class="col">
-                                {{ form.city.label(class="mb-1 mt-1") }}:
-                                {{ render_field_with_errors(form.city, class='form-control w-100', placeholder='City')
-                                }}
-
-                                {{ form.router.label(class="mb-1 mt-1") }}:
-                                {{ render_field_with_errors(form.router, class='form-control w-100',
-                                placeholder='Router') }}
+                                {{ form.state.label(class="") }}:
+                                {{ render_admin_with_errors(form.state, class='form-control w-100') }}
+                                {{ form.city.label(class="") }}:
+                                {{ render_admin_with_errors(form.city, class='form-control w-100')}}
+                                {{ form.router_brand.label(class="") }}:
+                                {{ render_admin_with_errors(form.router_brand, class='form-control w-100') }}
+                                {{ form.router_model.label(class="") }}:
+                                {{ render_admin_with_errors(form.router_model, class='form-control w-100') }}
+                                {{ form.mobile_brand.label(class="") }}:
+                                {{ render_admin_with_errors(form.mobile_brand, class='form-control w-100') }}
+                                {{ form.mobile_model.label(class="") }}:
+                                {{ render_admin_with_errors(form.mobile_model, class='form-control w-100') }}
+                                {{ form.subscription_type.label(class="") }}:
+                                {{ render_admin_with_errors(form.subscription_type, class='form-control w-100') }}
                             </div>
                         </div>
                         <br>
