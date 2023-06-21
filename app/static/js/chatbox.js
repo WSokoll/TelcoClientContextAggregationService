@@ -95,57 +95,68 @@ function isValid(value) {
 
 
 
-var devices = ["Cisco Catalyst 9600", "Netgear Nighthawk M5 MR5200", "Cisco ISR4331", "Cisco Catalyst 2960"];
+// var devices = ["Cisco Catalyst 9600", "Netgear Nighthawk M5 MR5200", "Cisco ISR4331", "Cisco Catalyst 2960"];
+
+var devices = [];
 
 
 
 
+function createDeviceButtons(devices_list) {
+	var buttonContainer = document.getElementById("button-container");
 
-function createDeviceButtons() {
-            var buttonContainer = document.getElementById("button-container");
+	for (var i = 0; i < devices_list.length; i++) {
+		var deviceButton = document.createElement("button");
+		deviceButton.innerHTML = devices_list[i];
+		deviceButton.className = "device-button";
+		deviceButton.addEventListener("click", function() {
+			var device = this.innerHTML;
+			buttonContainer.innerHTML = ""; // Clear the button container
+			writeMessage("Reported device: " + device);
+			chatboxForm.classList.toggle('show');
+		});
 
-            for (var i = 0; i < devices.length; i++) {
-                var deviceButton = document.createElement("button");
-                deviceButton.innerHTML = devices[i];
-                deviceButton.className = "device-button";
-                deviceButton.addEventListener("click", function() {
-                    var device = this.innerHTML;
-                    buttonContainer.innerHTML = ""; // Clear the button container
-                    writeMessage("Reported device: " + device);
-                    chatboxForm.classList.toggle('show');
-                });
-
-                buttonContainer.appendChild(deviceButton);
-            }
-        }
+		buttonContainer.appendChild(deviceButton);
+	}
+}
 
 function fetchTechnicalData(loggedUser) {
   const url = `http://localhost:5000/api/users/${loggedUser}`;
 
-  fetch(url)
+  return fetch(url)
     .then(response => response.json())
     .then(data => {
-      	const technicalData = data.technicalData;
-      	console.log(technicalData);
-      	// Further processing of the technicalData can be done here
-		Object.keys(technicalData).forEach((key, index) => {
+      const technicalData = data.technicalData;
+      console.log(technicalData);
+
+      const devicesList = [];
+
+      // Iterate over the keys of the technicalData object
+      Object.keys(technicalData).forEach((key, index) => {
         // Check if the index is even (to ensure we have pairs)
         if (index % 2 === 0) {
           const pair = [technicalData[key], technicalData[Object.keys(technicalData)[index + 1]]];
-          console.log(pair)
-          devices.push(pair[0] + " " + pair[1]);
-          console.log(devices)
+          devicesList.push(pair[0] + " " + pair[1]);
         }
       });
+
+      console.log(devicesList);
+      return devicesList;
     })
     .catch(error => {
       console.error('Error:', error);
+      return [];
     });
 }
 
 
-fetchTechnicalData(logged_user);
-createDeviceButtons();
+fetchTechnicalData(logged_user)
+.then(updatedDevices => {
+	devices = updatedDevices;
+    console.log(devices);
+    createDeviceButtons(devices); // Call createDeviceButtons after fetchTechnicalData
+  });
+
 
 console.log(devices)
 console.log(logged_user)
