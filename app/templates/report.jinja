@@ -51,7 +51,8 @@
               </div>
           </div>
           <div class="chatbox-message-content">
-              <h4 class="chatbox-message-no-message">You don't have message yet!</h4>
+              <h4 class="chatbox-message-no-message">Choose the device you want to report an issue with:</h4>
+                <div id="button-container"></div>
               <!-- <div class="chatbox-message-item sent">
                   <span class="chatbox-message-item-text">
                       Lorem, ipsum, dolor sit amet consectetur adipisicing elit. Quod, fugiat?
@@ -76,5 +77,6 @@
 {% endblock %}
 
 {% block scripts %}
+<script> var logged_user = {{ logged_user }} </script>
 <script src="{{url_for('static', filename='js/chatbox.js')}}"></script>
 {% endblock %}

@@ -202,7 +202,13 @@ select {
 	background: var(--grey);
 	border-radius: .5rem;
 	padding: .5rem 1.25rem;
+	transform: scale(0);
 }
+
+.chatbox-message-form.show {
+  transform: scale(1);
+}
+
 .chatbox-message-input {
 	background: transparent;
 	outline: none;
@@ -229,9 +235,25 @@ select {
 /* CHATBOX */
 
 
+.device-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: #e9e9e9;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
+.device-button:hover {
+  background-color: #a9a9a9;
+}
 
+#button-container {
+	text-align: center;
+	margin-top: 0px;
 
+}
 
 
 /* BREAKPOINTS */

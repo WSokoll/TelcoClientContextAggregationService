@@ -38,4 +38,4 @@ def get_post():
         flash('Problem has been reported')
         return redirect(url_for('home.get'))
 
-    return render_template('report.jinja', form=form)
+    return render_template('report.jinja', form=form, logged_user=current_user.id)

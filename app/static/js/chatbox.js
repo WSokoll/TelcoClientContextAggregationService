@@ -36,7 +36,7 @@ chatboxForm.addEventListener('submit', function (e) {
 	e.preventDefault()
 
 	if(isValid(textarea.value)) {
-		writeMessage()
+		writeMessage(textarea.value)
 		setTimeout(autoReply, 1000)
 	}
 })
@@ -47,12 +47,12 @@ function addZero(num) {
 	return num < 10 ? '0'+num : num
 }
 
-function writeMessage() {
+function writeMessage(messagetext) {
 	const today = new Date()
 	let message = `
 		<div class="chatbox-message-item sent">
 			<span class="chatbox-message-item-text">
-				${textarea.value.trim().replace(/\n/g, '<br>\n')}
+				${messagetext.trim().replace(/\n/g, '<br>\n')}
 			</span>
 			<span class="chatbox-message-item-time">${addZero(today.getHours())}:${addZero(today.getMinutes())}</span>
 		</div>
@@ -90,3 +90,62 @@ function isValid(value) {
 
 	return text.length > 0
 }
+
+// BUTTONS
+
+
+
+var devices = ["Cisco Catalyst 9600", "Netgear Nighthawk M5 MR5200", "Cisco ISR4331", "Cisco Catalyst 2960"];
+
+
+
+
+
+function createDeviceButtons() {
+            var buttonContainer = document.getElementById("button-container");
+
+            for (var i = 0; i < devices.length; i++) {
+                var deviceButton = document.createElement("button");
+                deviceButton.innerHTML = devices[i];
+                deviceButton.className = "device-button";
+                deviceButton.addEventListener("click", function() {
+                    var device = this.innerHTML;
+                    buttonContainer.innerHTML = ""; // Clear the button container
+                    writeMessage("Reported device: " + device);
+                    chatboxForm.classList.toggle('show');
+                });
+
+                buttonContainer.appendChild(deviceButton);
+            }
+        }
+
+function fetchTechnicalData(loggedUser) {
+  const url = `http://localhost:5000/api/users/${loggedUser}`;
+
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      	const technicalData = data.technicalData;
+      	console.log(technicalData);
+      	// Further processing of the technicalData can be done here
+		Object.keys(technicalData).forEach((key, index) => {
+        // Check if the index is even (to ensure we have pairs)
+        if (index % 2 === 0) {
+          const pair = [technicalData[key], technicalData[Object.keys(technicalData)[index + 1]]];
+          console.log(pair)
+          devices.push(pair[0] + " " + pair[1]);
+          console.log(devices)
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+
+fetchTechnicalData(logged_user);
+createDeviceButtons();
+
+console.log(devices)
+console.log(logged_user)
