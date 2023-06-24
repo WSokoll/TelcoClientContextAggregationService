@@ -22,8 +22,8 @@ def generate_token():
     return jsonify({'access_token': access_token}), 200
 
 
-@bp.route('/protected', methods=['GET'])
-@jwt_required()  # Middleware sprawdzający ważność tokena
-def protected_endpoint():
-    current_user = get_jwt_identity()
-    return jsonify({'message': f'Uzytkownik {current_user} ma dostep do chronionego zasobu'}), 200
+#@bp.route('/protected', methods=['GET'])
+#@jwt_required()  # Middleware sprawdzający ważność tokena
+#def protected_endpoint():
+#   current_user = get_jwt_identity()
+#   return jsonify({'message': f'Uzytkownik {current_user} ma dostep do chronionego zasobu'}), 200

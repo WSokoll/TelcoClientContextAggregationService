@@ -5,7 +5,7 @@ from datetime import datetime
 
 from flask import jsonify, request
 from flask_security import SQLAlchemyUserDatastore
-
+from flask_jwt_extended import jwt_required
 from app.app import context_db, app_db, mail_service
 from flask import Blueprint
 
@@ -16,6 +16,7 @@ bp = Blueprint('users_api', __name__)
 
 @bp.route('/users/<int:user_id>', methods=['GET'])
 # Method to handle whole context obtainment by user_id
+@jwt_required()
 def get_user_by_id(user_id: int):
     try:
         user = context_db.db.contexts.find_one({'userId': user_id})
@@ -28,6 +29,7 @@ def get_user_by_id(user_id: int):
 
 @bp.route('/users', methods=['GET'])
 # Can be used to obtain full personalData and userId by parameters
+@jwt_required()
 def get_user_by_parameters():
     args = request.args
     params = dict()
@@ -54,6 +56,7 @@ def get_user_by_parameters():
 
 
 @bp.route('users/register', methods=['POST'])
+@jwt_required()
 def register_new_user():
     data = request.get_json()
 
@@ -125,6 +128,7 @@ def register_new_user():
 #   ]
 # }
 @bp.route('/users/<int:user_id>/technical_data', methods=['POST'])
+@jwt_required()
 def add_user_technical_data(user_id: int):
     try:
         user = context_db.db.contexts.find_one({'userId': int(user_id)})
@@ -161,6 +165,7 @@ def add_user_technical_data(user_id: int):
 
 
 @bp.route('/users/<int:user_id>/technical_data/<string:product_id>', methods=['DELETE'])
+@jwt_required()
 def delete_user_technical_data(user_id: int, product_id: str):
     try:
         user = context_db.db.contexts.find_one({'userId': int(user_id)})
