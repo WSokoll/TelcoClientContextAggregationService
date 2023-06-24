@@ -36,8 +36,10 @@ chatboxForm.addEventListener('submit', function (e) {
 	e.preventDefault()
 
 	if(isValid(textarea.value)) {
-		writeMessage(textarea.value)
-		setTimeout(autoReply, 1000)
+		const messageToSend = textarea.value
+		writeMessage(messageToSend)
+		handleSendMessage(messageToSend)
+		// setTimeout(autoReply, 1000)
 	}
 })
 
@@ -80,6 +82,21 @@ function autoReply() {
 	scrollBottom()
 }
 
+function readMessage(receivedText) {
+	const today = new Date()
+	let message = `
+		<div class="chatbox-message-item received">
+			<span class="chatbox-message-item-text">
+				${receivedText}
+			</span>
+			<span class="chatbox-message-item-time">${addZero(today.getHours())}:${addZero(today.getMinutes())}</span>
+		</div>
+	`
+	chatboxMessageWrapper.insertAdjacentHTML('beforeend', message)
+	scrollBottom()
+}
+
+
 function scrollBottom() {
 	chatboxMessageWrapper.scrollTo(0, chatboxMessageWrapper.scrollHeight)
 }
@@ -98,7 +115,8 @@ function isValid(value) {
 // var devices = ["Cisco Catalyst 9600", "Netgear Nighthawk M5 MR5200", "Cisco ISR4331", "Cisco Catalyst 2960"];
 
 var devices = [];
-
+let userName;
+let userAge;
 
 
 
@@ -110,10 +128,11 @@ function createDeviceButtons(devices_list) {
 		deviceButton.innerHTML = devices_list[i];
 		deviceButton.className = "device-button";
 		deviceButton.addEventListener("click", function() {
-			var device = this.innerHTML;
+			chosenDevice = this.innerHTML;
 			buttonContainer.innerHTML = ""; // Clear the button container
-			writeMessage("Reported device: " + device);
+			writeMessage("Reported device: " + chosenDevice);
 			chatboxForm.classList.toggle('show');
+			handleClick(chosenDevice);
 		});
 
 		buttonContainer.appendChild(deviceButton);
@@ -128,7 +147,8 @@ function fetchTechnicalData(loggedUser) {
     .then(data => {
       const technicalData = data.technicalData;
       console.log(technicalData);
-
+      userAge = data.personalData.age;
+      userName = data.personalData.name;
       const devicesList = [];
 
       // Iterate over the keys of the technicalData object
@@ -160,3 +180,102 @@ fetchTechnicalData(logged_user)
 
 console.log(devices)
 console.log(logged_user)
+
+let socket; // Declare a variable to hold the socket object
+let chat_id;
+let chosenDevice;
+
+// Function to start Socket.IO client connection
+function startSocketIOClient(url) {
+	socket = io(url);
+
+	// Event listener for 'connect' event
+	socket.on('connect', () => {
+	  	console.log('Connected to the server');
+	});
+
+	// Event listener for custom events
+	socket.on('response', (data) => {
+		const jsonResponse = JSON.parse(data);
+		console.log("Received response (RAW):\n" + data);
+		const service = jsonResponse.service;
+		const metadata = jsonResponse.metadata;
+
+	  switch (service) {
+		case "IN_PROGRESS":
+			readMessage(jsonResponse.message)
+			console.log("Service is in progress");
+			break;
+		case "UNKNOWN_ERROR":
+			console.log("Unknown error occurred");
+			break;
+		case "NEEDS_HELP":
+			console.log("Help is needed");
+			break;
+		default:
+			console.log("Unknown service");
+	  }
+		// readMessage(data);
+	  	// console.log('Received customEvent:', data);
+	});
+
+	socket.on('startChat', (data) => {
+		readMessage(data);
+	  	console.log('Received customEvent:', data);
+	});
+
+	// Event listener for built-in 'disconnect' event
+	socket.on('disconnect', () => {
+	  	console.log('Disconnected from the server');
+	});
+}
+
+// Function to emit a message
+function emitMessage(eventType, message) {
+	if (socket) {
+	  	socket.emit(eventType, message);
+	} else {
+	  	console.log('Socket is not connected');
+	}
+}
+
+// Function to initialize socket and send starting message
+function initializeSocketAndSendMessage(url, startingMessage) {
+	chat_id = Math.floor(Math.random() * (10000 - 1) + 1);
+	startSocketIOClient(url);
+	emitMessage('startChat', startingMessage);
+}
+
+
+function sendSocketMessage(message) {
+	// const chatId = chat_id;
+	const service = ["IN_PROGRESS", "COMPLETED", "UNKNOWN_ERROR", "START"];
+	const messageText = message;
+	const conversationStarter = {
+	  client_id: logged_user,
+	  name: userName,
+	  age: userAge,
+	  behavior: "elderly",
+	  device_model: chosenDevice
+	};
+	const metadata = "TBD";
+
+
+	const jsonObject = {
+	  chat_id: chat_id,
+	  service: service,
+	  message: messageText,
+	  "conversation starter": conversationStarter,
+	  metadata: metadata
+	};
+	emitMessage('request', jsonObject);
+}
+
+// Example usage
+function handleClick(message) {
+	initializeSocketAndSendMessage('http://localhost:3000', message);
+}
+
+function handleSendMessage(message) {
+	sendSocketMessage(message);
+}
