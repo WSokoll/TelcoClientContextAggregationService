@@ -59,3 +59,36 @@
 {% macro prop_next() -%}
   {% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}
 {%- endmacro %}
+
+{% macro render_admin_with_errors(field, class='', placeholder='', autofocus=false) %}
+  <div class="fs-div mb-2 {{ 'mx-3' if field.type == 'RadioField' else '' }}" id="{{ field.id~'-div'|default('fs-field') }}">
+    {% if field.type == 'SelectField' %}
+      <select id="{{ field.id }}" class="{{ class }}" aria-describedby="input-{{ field.name }}-error" autofocus="{{ autofocus }}" name="{{ field.name }}">
+        {% for option in field %}
+          {% if loop.first %}
+            <option value="" disabled selected>Please select one of the options</option>
+          {% endif %}
+          {{ option }}
+        {% endfor %}
+      </select>
+    {% elif field.type == 'RadioField' %}
+      {% for option in field %}
+        <div class="mx-2">
+          {{ option }}
+          <label for="{{ option.id }}">{{ option.label }}</label>
+        </div>
+      {% endfor %}
+    {% else %}
+      {{ field(**{'class': class, 'autofocus': autofocus, 'placeholder': placeholder, 'aria-describedby': 'input-' ~ field.name ~ '-error'})|safe }}
+    {% endif %}
+    {% if field.errors %}
+      {% if field.type == 'RecaptchaField' %}
+        <div id="input-{{ field.name }}-error" class="form-text text-danger">Recaptcha must be filled in correctly</div>
+      {% else %}
+        {% for error in field.errors %}
+          <div id="input-{{ field.name }}-error" class="form-text text-danger">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+  </div>
+{% endmacro %}

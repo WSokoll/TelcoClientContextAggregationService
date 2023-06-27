@@ -1,0 +1,122 @@
+{% extends 'base.jinja' %}
+{% from "_macros.html" import render_admin_with_errors, render_form_errors, render_field %}
+{% block head %}
+<link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbox.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container-fluid my-5">
+    <div class="row">
+        <div class="col-8">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="table-info">
+                        <th scope="col">ID</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Surname</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">State</th>
+                        <th scope="col">City</th>
+                        <th scope="col">Router brand</th>
+                        <th scope="col">Router model</th>
+                        <th scope="col">Phone brand</th>
+                        <th scope="col">Phone model</th>
+                        <th scope="col">Subscription type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="table-primary">
+                        <th scope="row">{{ user.userId }}</th>
+                        <td>{{ user.personalData.email }}</td>
+                        <td>{{ user.personalData.name }}</td>
+                        <td>{{ user.personalData.surname }}</td>
+                        <td>{{ user.personalData.age }}</td>
+                        <td>{{ user.personalData.gender }}</td>
+                        <td>{{ user.personalData.state }}</td>
+                        <td>{{ user.personalData.city }}</td>
+                        <td>{{ user.technicalData.modemRouterBrand }}</td>
+                        <td>{{ user.technicalData.modemRouterModel }}</td>
+                        <td>{{ user.technicalData.mobilePhoneBrand }}</td>
+                        <td>{{ user.technicalData.mobilePhoneModel }}</td>
+                        <td>{{ user.crmData.subscriptionType }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-4">
+            <div class="bg-light">
+                <div class="card-body">
+                    <h2 class="card-title mb-4 text-center">Filter users</h2>
+                    <form method="POST" action="{{ url_for('admin.filter_users') }}">
+                        {{ form.csrf_token }}
+                        {{ render_form_errors(form) }}
+                        <div class="row justify-content-center">
+                            <div class="col">
+                                {{ form.user_id.label(class="") }}:
+                                {{ render_admin_with_errors(form.user_id, class='form-control w-100', placeholder='ID')}}
+                                {{ form.email.label(class="") }}:
+                                {{ render_admin_with_errors(form.email, class='form-control w-100', placeholder='Email')}}
+                                {{ form.name.label(class="") }}:
+                                {{ render_admin_with_errors(form.name, class='form-control w-100', placeholder='Name')}}
+                                {{ form.surname.label(class="") }}:
+                                {{ render_admin_with_errors(form.surname, class='form-control w-100',placeholder='Surname') }}
+                                {{ form.age.label(class="") }}:
+                                {{ render_admin_with_errors(form.age, class='form-control w-100', placeholder='Email')}}
+                                {{ form.gender.label(class="") }}:
+                                {{ render_admin_with_errors(form.gender, class='form-control w-100')}}
+                            </div>
+                            <div class="col">
+                                {{ form.state.label(class="") }}:
+                                {{ render_admin_with_errors(form.state, class='form-control w-100') }}
+                                {{ form.city.label(class="") }}:
+                                {{ render_admin_with_errors(form.city, class='form-control w-100')}}
+                                {{ form.router_brand.label(class="") }}:
+                                {{ render_admin_with_errors(form.router_brand, class='form-control w-100') }}
+                                {{ form.router_model.label(class="") }}:
+                                {{ render_admin_with_errors(form.router_model, class='form-control w-100') }}
+                                {{ form.mobile_brand.label(class="") }}:
+                                {{ render_admin_with_errors(form.mobile_brand, class='form-control w-100') }}
+                                {{ form.mobile_model.label(class="") }}:
+                                {{ render_admin_with_errors(form.mobile_model, class='form-control w-100') }}
+                                {{ form.subscription_type.label(class="") }}:
+                                {{ render_admin_with_errors(form.subscription_type, class='form-control w-100') }}
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-outline-dark w-100">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# <!-- Ticket Contexts Table -->
+<table class="table row justify-content-center">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Status</th>
+            <th>Content</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for context in contexts %}
+        <tr>
+            <td>{{ context.user }}</td>
+            <td>{{ context.status }}</td>
+            <td>{{ context.content }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table> #}
+</div>
+{% endblock %}
