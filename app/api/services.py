@@ -1,11 +1,13 @@
 from flask import jsonify, request
 from app.app import context_db, mail_service
 from flask import Blueprint
+from flask_jwt_extended import jwt_required
 
 bp = Blueprint('services_api', __name__)
 
 
 @bp.route('/services/<string:service_name>', methods=['GET'])
+@jwt_required()
 def get_service_by_service_name(service_name: str):
     try:
         service = context_db.db.services.find_one({'serviceName': service_name})
@@ -17,6 +19,7 @@ def get_service_by_service_name(service_name: str):
 
 
 @bp.route('/services', methods=['GET'])
+@jwt_required()
 def get_service_by_parameters():
     args = request.args
     params = dict()

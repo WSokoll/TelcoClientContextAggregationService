@@ -5,6 +5,7 @@ from flask_pymongo import PyMongo
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import SQLAlchemyUserDatastore, Security, hash_password
 from flask_security.models import fsqla_v2
+from flask_jwt_extended import JWTManager
 
 from app.email.email_service import MailService
 
@@ -17,7 +18,6 @@ context_db = PyMongo()
 security = Security()
 mail_service = MailService()
 
-
 def create_app():
     app = Flask(
         __name__,
@@ -25,7 +25,8 @@ def create_app():
         static_folder='static',
         static_url_path='/static'
     )
-
+    jwt = JWTManager(app)
+    
     app.config.from_pyfile('config.default.py')
     app.config.from_pyfile('../local/config.local.py')
 
@@ -183,4 +184,6 @@ def create_app():
     from app.api.crm import bp as bp_crm_api
     app.register_blueprint(bp_crm_api, url_prefix='/api')
 
+    from app.api.token import bp as bp_token_api
+    app.register_blueprint(bp_token_api, url_prefix='/api')
     return app

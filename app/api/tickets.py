@@ -1,6 +1,7 @@
 from flask import jsonify, request, json
 from app.app import context_db, mail_service
 from flask import Blueprint
+from flask_jwt_extended import jwt_required
 
 bp = Blueprint('tickets_api', __name__)
 
@@ -12,6 +13,7 @@ bp = Blueprint('tickets_api', __name__)
 #     (optional) "feedback": "Please try to restart your device"
 # }
 @bp.route('/tickets/<int:ticket_id>', methods=['PATCH'])
+@jwt_required()
 def patch_change_ticket_status(ticket_id: int):
     try:
         data = request.json

@@ -1,7 +1,8 @@
 from flask import jsonify, request
-
+from flask_jwt_extended import jwt_required
 from app.app import context_db
 from flask import Blueprint
+
 
 bp = Blueprint('crm_api', __name__)
 
@@ -11,6 +12,7 @@ bp = Blueprint('crm_api', __name__)
 #     'subscriptionType': 'monthly subscription'
 # }
 @bp.route('/set/crm/<int:user_id>', methods=['POST'])
+@jwt_required()
 def set_crm_data(user_id: int):
     try:
         user = context_db.db.contexts.find_one({'userId': int(user_id)})

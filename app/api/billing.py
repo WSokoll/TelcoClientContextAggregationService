@@ -1,5 +1,5 @@
 from flask import jsonify, request
-
+from flask_jwt_extended import jwt_required
 from app.app import context_db
 from flask import Blueprint
 
@@ -12,6 +12,7 @@ bp = Blueprint('billing_api', __name__)
 #     'serviceUsage': ''
 # }
 @bp.route('/set/billing/<int:user_id>', methods=['POST'])
+@jwt_required()
 def set_billing_data(user_id: int):
     try:
         user = context_db.db.contexts.find_one({'userId': int(user_id)})
@@ -52,6 +53,8 @@ def set_billing_data(user_id: int):
 #     "serviceUsage": "new service usage"
 # }
 @bp.route('/update/billing/<int:user_id>', methods=['PATCH'])
+@jwt_required()
+
 def update_billing_data(user_id: int):
     try:
         user = context_db.db.contexts.find_one({'userId': int(user_id)})
