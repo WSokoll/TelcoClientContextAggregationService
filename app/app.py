@@ -5,7 +5,7 @@ from flask_pymongo import PyMongo
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import SQLAlchemyUserDatastore, Security, hash_password
 from flask_security.models import fsqla_v2
-
+from flask_cors import CORS
 from app.email.email_service import MailService
 
 # MySQL
@@ -25,7 +25,8 @@ def create_app():
         static_folder='static',
         static_url_path='/static'
     )
-
+    cors = CORS(app)
+    app.config.from_pyfile('config.default.py')
     app.config.from_pyfile('config.default.py')
     app.config.from_pyfile('../local/config.local.py')
 

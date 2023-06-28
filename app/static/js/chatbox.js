@@ -38,7 +38,7 @@ chatboxForm.addEventListener('submit', function (e) {
 	if(isValid(textarea.value)) {
 		const messageToSend = textarea.value
 		writeMessage(messageToSend)
-		handleSendMessage(messageToSend)
+		handleSendMessage(messageToSend, "IN_PROGRESS")
 		// setTimeout(autoReply, 1000)
 	}
 })
@@ -215,12 +215,12 @@ function startSocketIOClient(url) {
 		default:
 			console.log("Unknown service");
 	  }
-		// readMessage(data);
+		//readMessage(jsonResponse.message);
 	  	// console.log('Received customEvent:', data);
 	});
 
 	socket.on('startChat', (data) => {
-		readMessage(data);
+		//readMessage(data);
 	  	console.log('Received customEvent:', data);
 	});
 
@@ -241,21 +241,25 @@ function emitMessage(eventType, message) {
 
 // Function to initialize socket and send starting message
 function initializeSocketAndSendMessage(url, startingMessage) {
-	chat_id = Math.floor(Math.random() * (10000 - 1) + 1);
+	if (!chat_id){
+		chat_id = Math.floor(Math.random() * (10000 - 1) + 1);
+	}
+	startingMessage.service = "START";
 	startSocketIOClient(url);
-	emitMessage('startChat', startingMessage);
+	sendSocketMessage('request', startingMessage,"IN_PROGRESS")
+	//emitMessage('startChat', startingMessage);
 }
 
 
-function sendSocketMessage(message) {
+function sendSocketMessage(event, message, serviceType) {
 	// const chatId = chat_id;
-	const service = ["IN_PROGRESS", "COMPLETED", "UNKNOWN_ERROR", "START"];
+	const service = serviceType;// ["IN_PROGRESS", "COMPLETED", "UNKNOWN_ERROR", "START"];
 	const messageText = message;
 	const conversationStarter = {
 	  client_id: logged_user,
 	  name: userName,
 	  age: userAge,
-	  behavior: "elderly",
+	  behavior: "nice",
 	  device_model: chosenDevice
 	};
 	const metadata = "TBD";
@@ -268,14 +272,19 @@ function sendSocketMessage(message) {
 	  "conversation starter": conversationStarter,
 	  metadata: metadata
 	};
-	emitMessage('request', jsonObject);
+	console.log(jsonObject)
+	emitMessage('request', JSON.stringify(jsonObject));
 }
+
+let chatServerUrl = 'http://10.144.59.161:7000' //'https://10.144.76.174:7000' ////'http://10.144.239.226:7000' //'http://localhost:3000'
 
 // Example usage
 function handleClick(message) {
-	initializeSocketAndSendMessage('http://localhost:3000', message);
+	//startSocketIOClient(chatServerUrl);
+	//sendSocketMessage("request", message, "START")
+	initializeSocketAndSendMessage(chatServerUrl, message);
 }
 
-function handleSendMessage(message) {
-	sendSocketMessage(message);
+function handleSendMessage(message, serviceType) {
+	sendSocketMessage("request", message, serviceType);
 }
